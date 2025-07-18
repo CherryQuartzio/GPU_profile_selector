@@ -29,20 +29,20 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
 
         // add a sections of items to the menu
         this._itemsSection = new PopupMenu.PopupMenuSection();
-        this._itemsSection.addAction('Nvidia', () => {
-            Utility.switchNvidia(this.all_settings);
-            super.title = 'Nvidia'
-            this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Nvidia', 'Restart to apply');
+        this._itemsSection.addAction('Integrated', () => {
+            Utility.switchIntegrated();
+            super.title = 'Integrated'
+            this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Integrated', 'Restart to apply');
         });
         this._itemsSection.addAction('Hybrid', () => {
             Utility.switchHybrid(this.all_settings);
             super.title = 'Hybrid'
             this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Hybrid', 'Restart to apply');
         });
-        this._itemsSection.addAction('Integrated', () => {
-            Utility.switchIntegrated();
-            super.title = 'Integrated'
-            this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Integrated', 'Restart to apply');
+        this._itemsSection.addAction('Nvidia', () => {
+            Utility.switchNvidia(this.all_settings);
+            super.title = 'Nvidia'
+            this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Nvidia', 'Restart to apply');
         });
         this.menu.addMenuItem(this._itemsSection);
 
