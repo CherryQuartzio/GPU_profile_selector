@@ -11,12 +11,13 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
     _init(extensionObject) {
         const currentProfile = Utility.getCurrentProfile();
         super._init({
-            title: currentProfile === Utility.GPU_PROFILE_UNKNOWN
-                ? 'GPU Profile'
+            title: 'GPU Profile',
+            subtitle: currentProfile === Utility.GPU_PROFILE_UNKNOWN
+                ? 'Unknown'
                 : Utility.capitalizeFirstLetter(currentProfile),
             iconName: 'selection-mode-symbolic',
             toggleMode: false, // disable the possibility to click the button
-            checked: true,
+            checked: currentProfile === 'hybrid' || currentProfile === 'nvidia',
         });
         this.all_settings = extensionObject.getSettings();
 
@@ -30,23 +31,26 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
         // add a sections of items to the menu
         this._itemsSection = new PopupMenu.PopupMenuSection();
         this._itemsSection.addAction('Integrated', () => {
-            if (currentProfile !== 'Integrated') {
+            if (currentProfile !== 'integrated') {
                 Utility.switchIntegrated();
-                super.title = 'Integrated'
+                super.subtitle = 'Integrated';
+                super.checked = false;
                 this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Integrated', 'Restart to apply');
             }
         });
         this._itemsSection.addAction('Hybrid', () => {
-            if (currentProfile !== 'Hybrid') {
+            if (currentProfile !== 'hybrid') {
                 Utility.switchHybrid(this.all_settings);
-                super.title = 'Hybrid'
+                super.subtitle = 'Hybrid';
+                super.checked = true;
                 this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Hybrid', 'Restart to apply');
             }
         });
         this._itemsSection.addAction('Nvidia', () => {
-            if (currentProfile !== 'Nvidia') {
+            if (currentProfile !== 'nvidia') {
                 Utility.switchNvidia(this.all_settings);
-                super.title = 'Nvidia'
+                super.subtitle = 'Nvidia';
+                super.checked = true;
                 this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Nvidia', 'Restart to apply');
             }
         });
