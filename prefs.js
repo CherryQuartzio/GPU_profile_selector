@@ -12,23 +12,23 @@ export default class GpuProfileSwitcherPreferences extends ExtensionPreferences 
         });
         
         const group = new Adw.PreferencesGroup({
-            title: _('Appearance'),
-            description: _('Configure the appearance of the extension'),
+            title: _('Options'),
+            description: _('Change extension and GPU driver settings'),
         });
 
         const row_rtd3 = new Adw.SwitchRow({
             title: _('RTD3'),
-            subtitle: _('Enable RTD3'),
+            subtitle: _('Enable RTD3 on hybrid mode'),
         });
 
         const row_force_composition_pipeline = new Adw.SwitchRow({
             title: _('Force Composition Pipeline'),
-            subtitle: _('Enable force composition pipeline'),
+            subtitle: _('Enable force composition pipeline on Nvidia mode'),
         });
 
         const row_coolbits = new Adw.SwitchRow({
             title: _('Coolbits'),
-            subtitle: _('Enable Coolbits'),
+            subtitle: _('Enable Coolbits on Nvidia mode'),
         });
 
         const row_force_topbar_view = new Adw.SwitchRow({
