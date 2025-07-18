@@ -15,7 +15,7 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
             subtitle: currentProfile === Utility.GPU_PROFILE_UNKNOWN
                 ? 'Unknown'
                 : Utility.capitalizeFirstLetter(currentProfile),
-            iconName: 'selection-mode-symbolic',
+            iconName: 'power-profile-performance-symbolic',
             toggleMode: false, // disable the possibility to click the button
             checked: currentProfile === 'hybrid' || currentProfile === 'nvidia',
         });
@@ -26,7 +26,7 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
             : Utility.capitalizeFirstLetter(currentProfile);
 
         // This function is unique to this class. It adds a nice header with an icon, title and optional subtitle.
-        this.menu.setHeader('selection-mode-symbolic', headerTitle, 'Choose a GPU mode');
+        this.menu.setHeader('power-profile-performance-symbolic', headerTitle, 'Choose a GPU mode');
 
         // add a sections of items to the menu
         this._itemsSection = new PopupMenu.PopupMenuSection();
@@ -34,24 +34,21 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
             if (currentProfile !== 'integrated') {
                 Utility.switchIntegrated();
                 super.subtitle = 'Integrated';
-                super.checked = false;
-                this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Integrated', 'Restart to apply');
+                this.menu.setHeader('power-profile-performance-symbolic', headerTitle + ' → Integrated', 'Restart to apply');
             }
         });
         this._itemsSection.addAction('Hybrid', () => {
             if (currentProfile !== 'hybrid') {
                 Utility.switchHybrid(this.all_settings);
                 super.subtitle = 'Hybrid';
-                super.checked = true;
-                this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Hybrid', 'Restart to apply');
+                this.menu.setHeader('power-profile-performance-symbolic', headerTitle + ' → Hybrid', 'Restart to apply');
             }
         });
         this._itemsSection.addAction('Nvidia', () => {
             if (currentProfile !== 'nvidia') {
                 Utility.switchNvidia(this.all_settings);
                 super.subtitle = 'Nvidia';
-                super.checked = true;
-                this.menu.setHeader('selection-mode-symbolic', headerTitle + ' → Nvidia', 'Restart to apply');
+                this.menu.setHeader('power-profile-performance-symbolic', headerTitle + ' → Nvidia', 'Restart to apply');
             }
         });
         this.menu.addMenuItem(this._itemsSection);
@@ -77,7 +74,7 @@ class AttachedToBatteryView extends QuickSettings.SystemIndicator {
 
     enable() {
         this._indicator = this._addIndicator();
-        this._indicator.icon_name = 'selection-mode-symbolic' //Gio.icon_new_for_string(Me.dir.get_path() + Utility.ICON_SELECTOR_FILE_NAME);
+        this._indicator.icon_name = 'power-profile-performance-symbolic' //Gio.icon_new_for_string(Me.dir.get_path() + Utility.ICON_SELECTOR_FILE_NAME);
         this._indicator.visible = false;
     }
 

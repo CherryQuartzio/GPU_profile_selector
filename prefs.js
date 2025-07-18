@@ -13,17 +13,17 @@ export default class GpuProfileSwitcherPreferences extends ExtensionPreferences 
         
         const group = new Adw.PreferencesGroup({
             title: _('Options'),
-            description: _('Change extension and GPU driver settings'),
+            description: _('Adjust extension and profile switching behaviors'),
         });
 
         const row_rtd3 = new Adw.SwitchRow({
             title: _('RTD3'),
-            subtitle: _('Enable RTD3 on hybrid mode'),
+            subtitle: _('Enable PCI-Express Runtime D3 (RTD3) Power Management on Hybrid mode'),
         });
 
         const row_force_composition_pipeline = new Adw.SwitchRow({
             title: _('Force Composition Pipeline'),
-            subtitle: _('Enable force composition pipeline on Nvidia mode'),
+            subtitle: _('Enable ForceCompositionPipeline on Nvidia mode'),
         });
 
         const row_coolbits = new Adw.SwitchRow({
