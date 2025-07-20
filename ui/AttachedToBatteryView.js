@@ -8,12 +8,12 @@ import * as Utility from '../lib/Utility.js';
 export const AttachedToBatteryToggle = GObject.registerClass(
 class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {  
     _init(extensionObject) {
-        this.activeProfile = Utility.getCurrentProfile(); // active profile since startup
-        this.requestedProfile = null;
+        this.activeProfile = Utility.getCurrentProfile(); // initialzied profile since startup
         this.chosenProfile = this.activeProfile === Utility.GPU_PROFILE_UNKNOWN // currently selected profile
                 ? 'unknown'
                 : this.activeProfile;
         this.restartPending = false;
+        this.doNotSwitch = false;
         
         super._init({
             title: 'GPU Profile',
@@ -30,24 +30,24 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
         // add a sections of items to the menu
         this._itemsSection = new PopupMenu.PopupMenuSection();
         this._itemsSection.addAction('Integrated' + (this.activeProfile === 'integrated' ? ' (Active)' : ''), () => {
-            if (this.chosenProfile !== 'integrated' && this.requestedProfile === null) {
-                this.requestedProfile = 'integrated';
+            if (this.chosenProfile !== 'integrated' && !this.doNotSwitch) {
+                this.doNotSwitch = true;
                 super.subtitle = 'Switching...';
                 this.menu.setHeader('power-profile-performance-symbolic', super.title, 'Switching to Integrated mode...');
                 Utility.switchIntegrated(this._onSwitchComplete.bind(this));
             }
         });
         this._itemsSection.addAction('Hybrid' + (this.activeProfile === 'hybrid' ? ' (Active)' : ''), () => {
-            if (this.chosenProfile !== 'hybrid' && this.requestedProfile === null) {
-                this.requestedProfile = 'hybrid';
+            if (this.chosenProfile !== 'hybrid' && !this.doNotSwitch) {
+                this.doNotSwitch = true;
                 super.subtitle = 'Switching...';
                 this.menu.setHeader('power-profile-performance-symbolic', super.title, 'Switching to Hybrid mode...');
                 Utility.switchHybrid(this.all_settings, this._onSwitchComplete.bind(this));
             }
         });
         this._itemsSection.addAction('Nvidia'+ (this.activeProfile === 'nvidia' ? ' (Active)' : ''), () => {
-            if (this.chosenProfile !== 'nvidia' && this.requestedProfile === null) {
-                this.requestedProfile = 'nvidia';
+            if (this.chosenProfile !== 'nvidia' && !this.doNotSwitch) {
+                this.doNotSwitch = true;
                 super.subtitle = 'Switching...';
                 this.menu.setHeader('power-profile-performance-symbolic', super.title, 'Switching to Nvidia mode...');
                 Utility.switchNvidia(this.all_settings, this._onSwitchComplete.bind(this));
@@ -68,22 +68,36 @@ class AttachedToBatteryToggle extends QuickSettings.QuickMenuToggle {
     }
 
     _onSwitchComplete() {
+        // chosenProfile before switch
+        let priorProfile = this.chosenProfile;
         this.chosenProfile = Utility.getCurrentProfile();
-        if (!this.restartPending && (this.chosenProfile !== this.requestedProfile || this.activeProfile === this.requestedProfile)) {
-            super.subtitle = Utility.capitalizeFirstLetter(this.chosenProfile);
+
+        // if chosenProfile is the same as prior profile, operation aborted
+        if (this.chosenProfile === priorProfile) {
+            if (this.restartPending) {
+                super.subtitle = Utility.capitalizeFirstLetter(this.chosenProfile) + '*';
+                this.menu.setHeader('power-profile-performance-symbolic', super.title, 
+                    'Restart to apply ' + Utility.capitalizeFirstLetter(this.chosenProfile) + ' mode');
+            }
+            else { // GPU switch attempt aborted
+                super.subtitle = Utility.capitalizeFirstLetter(this.chosenProfile);
+                this.menu.setHeader('power-profile-performance-symbolic', super.title, 'Choose a GPU mode');
+            }
+        }
+        else if (this.activeProfile === this.chosenProfile) {
+            super.subtitle = Utility.capitalizeFirstLetter(this.activeProfile);
             this.menu.setHeader('power-profile-performance-symbolic', super.title, 'Choose a GPU mode');
+            this.restartPending = false;
         }
         else {
-            this.restartPending = true;
             super.subtitle = Utility.capitalizeFirstLetter(this.chosenProfile) + '*';
             this.menu.setHeader('power-profile-performance-symbolic', super.title, 
                 'Restart to apply ' + Utility.capitalizeFirstLetter(this.chosenProfile) + ' mode');
             Utility.requestReboot();
+            this.restartPending = true;
         }
         
-        // Deal with the visuals of aborting while in restart pending scenario
-
-        this.requestedProfile = null;
+        this.doNotSwitch = false;
     }
 });
 
